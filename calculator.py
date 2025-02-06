@@ -18,11 +18,14 @@ def mult(num1, num2):
 def div(num1, num2):
     num1 = float(num1)
     num2 = float(num2)
+    if num2 == 0:
+        print("Divisor Cannot be Zero!")
+        return
     ans = num1 / num2
     print(f"Answer: {num1} / {num2} = {ans:.2f}")
 
 while 1:
-    userInput = input("Input: ")
+    userInput = input("Type the expression or ('exit' to terminate): ")
     userSplit = re.split("\s",userInput)
 
     if "+" in userSplit:
@@ -33,6 +36,8 @@ while 1:
         mult(userSplit[0], userSplit[-1])
     elif "/" in userSplit:
         div(userSplit[0], userSplit[-1])
-    else:
+    elif "exit" in userSplit:
         print("The calculator is exiting...")
         break
+    else:
+        print("Invalid input!")
