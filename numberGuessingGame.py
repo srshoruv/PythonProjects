@@ -1,4 +1,5 @@
 from random import randint
+import os
 
 selectLevel = int(input("Select Level:\n1: Easy (1-10)\n2: Medium (1-50)\n3: Hard (1-100)\nYour Choice: "))
 num = 0
@@ -53,3 +54,8 @@ while 1:
         print("Higher!")
         userInput = int(input("Enter your guess: "))
     attempt += 1
+
+file = open("score.txt", "w")
+file.write(f"You Have used {attempt} attempts to solve!")
+file = open("score.txt", "r")
+print(file.read())
