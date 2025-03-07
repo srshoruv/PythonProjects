@@ -1,78 +1,72 @@
-import tkinter as tk
-from tkinter import messagebox
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QWidget, QLineEdit, QGridLayout, QPushButton, QVBoxLayout, QHBoxLayout
 
-# Functions for calculator operations
-def add():
-    try:
-        num1 = int(entry1.get())
-        num2 = int(entry2.get())
-        result_var.set(f"{num1} + {num2} = {num1 + num2}")
-    except ValueError:
-        messagebox.showerror("Invalid Input", "Please enter valid numbers.")
+# main objects
+buttonList = ['1','2','3','+','4','5','6','-','7','8','9','*','0','.','=','/']
+app = QApplication([])
+main_window = QWidget()
+main_window.setWindowTitle("iCalculator")
+main_window.resize(250,300)
+grid = QGridLayout()
 
-def sub():
-    try:
-        num1 = int(entry1.get())
-        num2 = int(entry2.get())
-        result_var.set(f"{num1} - {num2} = {num1 - num2}")
-    except ValueError:
-        messagebox.showerror("Invalid Input", "Please enter valid numbers.")
+def button_click():
+    button = app.sender()
+    text = button.text()
 
-def mult():
-    try:
-        num1 = int(entry1.get())
-        num2 = int(entry2.get())
-        result_var.set(f"{num1} x {num2} = {num1 * num2}")
-    except ValueError:
-        messagebox.showerror("Invalid Input", "Please enter valid numbers.")
+    if text == '=':
+        symbol = text_box.text()
+        try:
+            res = eval(symbol)
+            text_box.setText(str(res))
+        except ZeroDivisionError:
+            text_box.setText("Error")
+        except NameError:
+            text_box.clear()
 
-def div():
-    try:
-        num1 = float(entry1.get())
-        num2 = float(entry2.get())
-        if num2 == 0:
-            messagebox.showerror("Error", "Cannot divide by zero!")
-        else:
-            result_var.set(f"{num1} / {num2} = {num1 / num2:.2f}")
-    except ValueError:
-        messagebox.showerror("Invalid Input", "Please enter valid numbers.")
+    elif text == "Clear":
+        text_box.clear()
+    
+    elif text == '<':
+        current_text = text_box.text()
+        text_box.setText(current_text[:-1])
+    else:
+        print("Pressed", button)
+        current_text = text_box.text()
+        text_box.setText(current_text + text)
 
-def clear():
-    entry1.delete(0, tk.END)
-    entry2.delete(0, tk.END)
-    result_var.set("")
 
-# Creating the main window
-root = tk.Tk()
-root.title("Calculator")
 
-# Create the input fields
-entry1 = tk.Entry(root, width=10)
-entry1.grid(row=0, column=0, padx=10, pady=10)
+row = 0
+col = 0
 
-entry2 = tk.Entry(root, width=10)
-entry2.grid(row=0, column=2, padx=10, pady=10)
+for buttons in buttonList:
+    button = QPushButton(buttons)
+    button.clicked.connect(button_click)
+    grid.addWidget(button, row, col)
 
-# Create buttons for operations
-button_add = tk.Button(root, text="+", width=10, command=add)
-button_add.grid(row=1, column=0, padx=10, pady=10)
+    col += 1
+    if col > 3:
+        row += 1
+        col = 0
 
-button_sub = tk.Button(root, text="-", width=10, command=sub)
-button_sub.grid(row=1, column=1, padx=10, pady=10)
+# creating elements
+text_box = QLineEdit()
+clear = QPushButton("Clear")
+delete = QPushButton("<")
 
-button_mult = tk.Button(root, text="*", width=10, command=mult)
-button_mult.grid(row=1, column=2, padx=10, pady=10)
+button_row = QHBoxLayout()
+button_row.addWidget(clear)
+button_row.addWidget(delete)
 
-button_div = tk.Button(root, text="/", width=10, command=div)
-button_div.grid(row=2, column=0, padx=10, pady=10)
+# Adding Elements
+master_Layout = QVBoxLayout()
+master_Layout.addWidget(text_box)
+master_Layout.addLayout(grid)
+master_Layout.addLayout(button_row)
+main_window.setLayout(master_Layout)
 
-button_clear = tk.Button(root, text="Clear", width=10, command=clear)
-button_clear.grid(row=2, column=1, padx=10, pady=10)
-
-# Display result area
-result_var = tk.StringVar()
-result_label = tk.Label(root, textvariable=result_var, width=25, height=2)
-result_label.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
-
-# Run the application
-root.mainloop()
+# Show/hide App
+clear.clicked.connect(button_click)
+delete.clicked.connect(button_click)
+main_window.show()
+app.exec_()
