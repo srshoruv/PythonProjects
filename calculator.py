@@ -66,6 +66,6 @@ while 1:
         else:
             print("Clearing history...")
     elif "help" in userSplit:
-        print("'history' to see history.\n'clear' to clear history.\n'Exit' to terminate the program.\n")
+        print("'history' to see history.\n'clear' to clear history.\n'exit' to terminate the program.\n")
     else:
         print("Invalid input!")
