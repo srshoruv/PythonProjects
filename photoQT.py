@@ -1,5 +1,7 @@
+import os
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QListWidget, QComboBox, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QVBoxLayout, QHBoxLayout, QPushButton, QListWidget, QComboBox, QLabel
+from PyQt5.QtGui import QPixmap
 
 app = QApplication([])
 main_window = QWidget()
@@ -9,7 +11,7 @@ master_layout = QHBoxLayout()
 col1 = QVBoxLayout()
 col2 = QVBoxLayout()
 
-button1 = QPushButton("Select Folder")
+btn_folder = QPushButton("Select Folder")
 folder_list = QListWidget()
 
 btn_left = QPushButton("Left")
@@ -26,7 +28,7 @@ filter_box.addItems(["Original","Left", "Right","Mirror","Sharpness","B/W","Satu
 picture_box = QLabel("Picture Will Appear Here")
 
 
-col1.addWidget(button1)
+col1.addWidget(btn_folder)
 col1.addWidget(folder_list)
 col1.addWidget(filter_box)
 col1.addWidget(btn_left)
@@ -41,6 +43,37 @@ col2.addWidget(picture_box)
 master_layout.addLayout(col1,20)
 master_layout.addLayout(col2, 80)
 main_window.setLayout(master_layout)
+
+# App Functionality
+
+working_directory = ""
+
+# Filter Files and Extensions
+
+def filter(files, extensions):
+    results = []
+    for file in files:
+        for ext in extensions:
+            if file.endswith(ext):
+                results.append(file)
+    return results
+
+
+# choose current work directory
+
+def getWorkDirectory():
+    global working_directory
+    working_directory = QFileDialog.getExistingDirectory()
+    extensions = ['.png', '.jpg', '.svg', '.jpeg']
+    filenames = filter(os.listdir(working_directory),extensions)
+    folder_list.clear()
+
+    for filename in filenames:
+        folder_list.addItem(filename)
+
+btn_folder.clicked.connect(getWorkDirectory)
+
+
 
 main_window.show()
 app.exec_()
